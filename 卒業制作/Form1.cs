@@ -28,6 +28,7 @@ namespace 卒業制作
         private void button1_Click(object sender, EventArgs e)
         {
             rule.Show();
+            // this.Hide();
         }
 
         private void labels_Click(object sender, EventArgs e)
