@@ -19,7 +19,8 @@ https://visualstudio.microsoft.com/ja/vs/
 インストールが完了したら、Visual Studioを起動します。
 5.プロジェクトのクローン
 空のフォルダーを作成し、Visual Studioのリポジトリのクローンを選択してこのポートフォリオのプロジェクトをクローンします。
-https://github.com/Ponzu0927-blip/portfolio10142025.git　をリポジトリの場所に入力してください。
+https://github.com/Ponzu0927-blip/portfolio10142025.git
+をリポジトリの場所に入力してください。
 パスには先ほど作成した空のフォルダーを指定してください。
 
 
