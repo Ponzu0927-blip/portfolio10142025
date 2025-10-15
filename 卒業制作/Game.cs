@@ -40,6 +40,11 @@ namespace 卒業制作
             ResetDiceImages();
             RollMyDice();
             RollOpponentDice();
+            pictureBox1.Visible = true;
+            pictureBox2.Visible = true;
+            pictureBox3.Visible = true;
+            pictureBox4.Visible = true;
+            pictureBox5.Visible = true;
 
             // 振り直しを有効化
             canReroll = true;
@@ -71,6 +76,11 @@ namespace 卒業制作
             ResetDiceImages();
             button1.Enabled = true; // ゲーム終了後に再度プレイ可能に
             button2.Enabled = false; // 振り直しボタンは無効化
+            pictureBox1.Visible = false;
+            pictureBox2.Visible = false;
+            pictureBox3.Visible = false;
+            pictureBox4.Visible = false;
+            pictureBox5.Visible = false;
             pictureBox6.Visible = false;
             pictureBox7.Visible = false;
             pictureBox8.Visible = false;
@@ -305,6 +315,5 @@ namespace 卒業制作
                 box.Image = null;
             }
         }
-
     }
 }
