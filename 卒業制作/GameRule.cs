@@ -19,9 +19,7 @@ namespace 卒業制作
         public GameRule()
         {
             InitializeComponent();
-            this.game = new Game();
-            this.rule = new Rule();
-
+            
             // ボタンの境界線を消す
             button1.FlatStyle = FlatStyle.Flat;
             button1.FlatAppearance.BorderSize = 0;
@@ -44,11 +42,13 @@ namespace 卒業制作
 
         private void Gamestart(object sender, EventArgs e)
         {
+            this.game = new Game();
             game.Show();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
+            this.rule = new Rule();
             rule.Show();
         }
     }
