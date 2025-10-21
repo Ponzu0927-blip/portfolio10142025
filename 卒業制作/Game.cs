@@ -29,10 +29,17 @@ namespace 卒業制作
         //int[] test = {1,1,3,4,5};
         //int[] contest = { 1, 1, 3, 4, 2 };
         Random rand = new Random();
+        bool[] keepDice = new bool[5];  // tureならそのサイコロは残す
+
 
         public Game()
         {
             InitializeComponent();
+            pictureBox1.Click += (s, e) => ToggleKeepDice(0, pictureBox1);
+            pictureBox2.Click += (s, e) => ToggleKeepDice(1, pictureBox2);
+            pictureBox3.Click += (s, e) => ToggleKeepDice(2, pictureBox3);
+            pictureBox4.Click += (s, e) => ToggleKeepDice(3, pictureBox4);
+            pictureBox5.Click += (s, e) => ToggleKeepDice(4, pictureBox5);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -94,7 +101,10 @@ namespace 卒業制作
             PictureBox[] boxes = { pictureBox1, pictureBox2, pictureBox3, pictureBox4, pictureBox5 };
             for (int i = 0; i < 5; i++)
             {
-                dice[i] = rand.Next(1, 7); // 1から6までのランダムな数値を生成
+                if(!keepDice[i]) // 残さないダイスだけ振り直す
+                {
+                    dice[i] = rand.Next(1, 7); // 1から6までのランダムな数値を生成
+                }
                 switch (dice[i])
                 {
                     case 1:
@@ -309,11 +319,24 @@ namespace 卒業制作
             foreach (var box in myBoxes)
             {
                 box.Image = null;
+                box.BorderStyle = BorderStyle.None;
             }
             foreach (var box in conBoxes)
             {
                 box.Image = null;
             }
+            for(int i = 0; i < keepDice.Length; i++)
+            {
+                keepDice[i] = false;
+            }
+        }
+
+
+
+        private void ToggleKeepDice(int index, PictureBox box)
+        {
+            keepDice[index] = !keepDice[index];
+            box.BorderStyle = keepDice[index] ? BorderStyle.Fixed3D : BorderStyle.None;
         }
     }
 }
