@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO;
 
 namespace 卒業制作
 {
@@ -235,7 +234,7 @@ namespace 卒業制作
                     return "ブタ";
             }
         }
-        private PokerHandRank GetPokerHandRank(int[]dice)
+        private PokerHandRank GetPokerHandRank(int[] dice)
         {
             var counts = new int[7]; // サイコロの目は1から6までなので、インデックス0は使用しない
             foreach (var d in dice)
@@ -243,21 +242,13 @@ namespace 卒業制作
                 counts[d]++;
             }
 
-            bool isStraight = false;
-            for (int i = 1; i <= 2; i++)
-            {
-                if (counts[i] == 1 && counts[i + 1] == 1 && counts[i + 2] == 1 && counts[i + 3] == 1 && counts[i + 4] == 1)
-                {
-                    isStraight = true;
-                }
-            }
             int maxCount = counts.Max();
             int pairCount = counts.Count(c => c == 2);
 
-            if(maxCount == 5) return PokerHandRank.FiveCard;
+            if (maxCount == 5) return PokerHandRank.FiveCard;
             if (maxCount == 4) return PokerHandRank.FourCard;
             if (maxCount == 3 && pairCount == 1) return PokerHandRank.FullHouse;
-            if(maxCount == 3) return PokerHandRank.ThreeCard;
+            if (maxCount == 3) return PokerHandRank.ThreeCard;
             if (pairCount == 2) return PokerHandRank.TwoPair;
             if (pairCount == 1) return PokerHandRank.OnePair;
             return PokerHandRank.HighCard;
