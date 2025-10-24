@@ -25,8 +25,8 @@ namespace 卒業制作
         int[] dice = new int[5];
         int[] conDice = new int[5];
         bool canReroll = true;
-        //int[] test = {1,1,3,4,5};
-        //int[] contest = { 1, 1, 3, 4, 2 };
+        //int[] test = { 6, 6, 6, 1, 5 };
+        //int[] contest = { 5, 5, 5, 4, 2 };
         Random rand = new Random();
         bool[] keepDice = new bool[5];  // tureならそのサイコロは残す
 
@@ -100,7 +100,7 @@ namespace 卒業制作
             PictureBox[] boxes = { pictureBox1, pictureBox2, pictureBox3, pictureBox4, pictureBox5 };
             for (int i = 0; i < 5; i++)
             {
-                if(!keepDice[i]) // 残さないダイスだけ振り直す
+                if (!keepDice[i]) // 残さないダイスだけ振り直す
                 {
                     dice[i] = rand.Next(1, 7); // 1から6までのランダムな数値を生成
                 }
@@ -129,7 +129,7 @@ namespace 卒業制作
             // テスト用の固定値
 
             //PictureBox[] boxestest = { pictureBox1, pictureBox2, pictureBox3, pictureBox4, pictureBox5 };
-            //for(int i =0; i<test.Length; i++)
+            //for (int i = 0; i < test.Length; i++)
             //{
             //    dice[i] = test[i]; // テスト用の固定値
             //    switch (test[i])
@@ -253,6 +253,68 @@ namespace 卒業制作
             if (pairCount == 1) return PokerHandRank.OnePair;
             return PokerHandRank.HighCard;
         }
+
+        private int[] GetRankValues(int[] dice, PokerHandRank rank)
+        {
+            var counts = new int[7];
+            foreach (var d in dice) counts[d]++;
+            List<int> result = new List<int>();
+
+            switch (rank)
+            {
+                case PokerHandRank.FiveCard:
+                    // 5枚揃いの目
+                    result.Add(Array.IndexOf(counts, 5));
+                    break;
+                case PokerHandRank.FourCard:
+                    // 4枚揃いの目＋残り
+                    result.Add(Array.IndexOf(counts, 4));
+                    result.Add(Array.IndexOf(counts, 1));
+                    break;
+                case PokerHandRank.FullHouse:
+                    // 3枚揃いの目＋2枚揃いの目
+                    result.Add(Array.IndexOf(counts, 3));
+                    result.Add(Array.IndexOf(counts, 2));
+                    break;
+                case PokerHandRank.ThreeCard:
+                    // 3枚揃いの目＋残り（大きい順）
+                    result.Add(Array.IndexOf(counts, 3));
+                    for (int i = 6; i >= 1; i--)
+                        if (counts[i] == 1) result.Add(i);
+                    break;
+                case PokerHandRank.TwoPair:
+                    // 2ペア（大きい順）＋残り
+                    var pairs = new List<int>();
+                    int single = 0;
+                    for (int i = 6; i >= 1; i--)
+                    {
+                        if (counts[i] == 2) pairs.Add(i);
+                        if (counts[i] == 1) single = i;
+                    }
+                    result.AddRange(pairs);
+                    result.Add(single);
+                    break;
+                case PokerHandRank.OnePair:
+                    // ペア＋残り（大きい順）
+                    int pair = 0;
+                    for (int i = 6; i >= 1; i--)
+                    {
+                        if (counts[i] == 2) pair = i;
+                    }
+                    result.Add(pair);
+                    for (int i = 6; i >= 1; i--)
+                        if (counts[i] == 1) result.Add(i);
+                    break;
+                case PokerHandRank.HighCard:
+                    // 全て大きい順
+                    for (int i = 6; i >= 1; i--)
+                        for (int j = 0; j < counts[i]; j++)
+                            result.Add(i);
+                    break;
+            }
+            return result.ToArray();
+        }
+
         private void JudgePokerWinner()
         {
             var myRank = GetPokerHandRank(dice);
@@ -272,36 +334,36 @@ namespace 卒業制作
             }
             else
             {
-                // 役が同じ場合、サイコロの目を降順で比較
-                int[]mySorted = dice.OrderByDescending(x => x).ToArray();
-                int[]conSorted = conDice.OrderByDescending(x => x).ToArray();
-                string myRate = string.Join(",", mySorted);
-                string conRate = string.Join(",", conSorted);
+                // 役が同じ場合、役ごとの出目で比較
+                int[] myRankValues = GetRankValues(dice, myRank);
+                int[] conRankValues = GetRankValues(conDice, conRank);
+                string myRate = string.Join(",", myRankValues);
+                string conRate = string.Join(",", conRankValues);
 
-                // 目の強さで判定
                 bool decided = false;
-                for(int i = 0; i < 5; i++)
+                for (int i = 0; i < myRankValues.Length; i++)
                 {
-                    if(mySorted[i] > conSorted[i])
+                    if (i >= conRankValues.Length) break;
+                    if (myRankValues[i] > conRankValues[i])
                     {
-                        result = $"あなたの勝ちです！\n(目の強さ:{myRate} > {conRate})";
+                        result = $"あなたの勝ちです！\n(役の出目:{myRate} > {conRate})";
                         decided = true;
                         break;
                     }
-                    else if(mySorted[i] < conSorted[i])
+                    else if (myRankValues[i] < conRankValues[i])
                     {
-                        result = $"コンピュータの勝ちです！\n(目の強さ:{myRate} < {conRate})";
+                        result = $"コンピュータの勝ちです！\n(役の出目:{myRate} < {conRate})";
                         decided = true;
                         break;
                     }
                 }
-                if(!decided)
+                if (!decided)
                 {
-                    result = $"引き分けです！\n(目の強さ:{myRate} = {conRate})";
+                    result = $"引き分けです！\n(役の出目:{myRate} = {conRate})";
                 }
             }
-            MessageBox.Show($"あなたの役: {myHand}\nコンピュータの役: {conHand}\n{result}","勝敗判定");
-            MessageBox.Show("もう一度プレイするには、サイコロを振るボタンを押してください。","再戦");
+            MessageBox.Show($"あなたの役: {myHand}\nコンピュータの役: {conHand}\n{result}", "勝敗判定");
+            MessageBox.Show("もう一度プレイするには、サイコロを振るボタンを押してください。", "再戦");
         }
         private void ResetDiceImages()
         {
