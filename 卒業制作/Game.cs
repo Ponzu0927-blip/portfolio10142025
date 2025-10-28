@@ -30,7 +30,6 @@ namespace 卒業制作
         Random rand = new Random();
         bool[] keepDice = new bool[5];  // tureならそのサイコロは残す
 
-
         public Game()
         {
             InitializeComponent();
@@ -157,9 +156,9 @@ namespace 卒業制作
         }
         private void RollOpponentDice()
         {
+            PictureBox[] boxes1 = { pictureBox6, pictureBox7, pictureBox8, pictureBox9, pictureBox10 };
             for (int i = 0; i < 5; i++)
             {
-                PictureBox[] boxes1 = { pictureBox6, pictureBox7, pictureBox8, pictureBox9, pictureBox10 };
                 conDice[i] = rand.Next(1, 7); // 1から6までのランダムな数値を生成
                 switch (conDice[i])
                 {
